@@ -3,87 +3,122 @@ import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 
 
+// ========================================
+// GET CURRENT USER
+// ========================================
+
 export const getCurrentUser = async (dispatch) => {
+  try {
+    console.log("1. getCurrentUser called");
 
-    try {
+    const result = await axios.get(
+      serverUrl + "/api/user/currentUser",
+      {
+        withCredentials: true,
+      }
+    );
 
-        console.log(
-            "1. getCurrentUser called"
-        );
+    console.log("2. API RESPONSE =", result.data);
 
-        const result = await axios.get(
+    dispatch(setUserData(result.data));
 
-            serverUrl +
-            "/api/user/currentUser",
+    console.log("3. DISPATCH DONE");
 
-            {
-                withCredentials: true
-            }
-
-        );
-
-        console.log(
-            "2. API RESPONSE =",
-            result.data
-        );
-
-        dispatch(
-            setUserData(
-                result.data
-            )
-        );
-
-        console.log(
-            "3. DISPATCH DONE"
-        );
-
-    }
-
-    catch (error) {
-
-        console.log(
-            "4. API ERROR =",
-            error
-        );
-
-    }
+  } catch (error) {
+    console.log("4. API ERROR =", error);
+  }
 };
 
 
+// ========================================
+// GENERATE NOTES
+// ========================================
+
 export const generateNotes = async (payload) => {
+  try {
+    const result = await axios.post(
+      serverUrl + "/api/notes/generate-notes",
+      payload,
+      {
+        withCredentials: true,
+      }
+    );
 
-    try {
+    console.log(
+      "GENERATE NOTES RESPONSE =",
+      result.data
+    );
 
-        const result = await axios.post(
+    return result.data;
 
-            serverUrl +
-            "/api/notes/generate-notes",
+  } catch (error) {
+    console.log(
+      "GENERATE NOTES ERROR =",
+      error
+    );
 
-            payload,
+    throw error;
+  }
+};
 
-            {
-                withCredentials: true
-            }
 
-        );
+// ========================================
+// GET NOTES HISTORY
+// ========================================
 
-        console.log(
-            "GENERATE NOTES RESPONSE =",
-            result.data
-        );
+export const getNotesHistory = async () => {
+  try {
+    const result = await axios.get(
+      serverUrl + "/api/notes/history",
+      {
+        withCredentials: true,
+      }
+    );
 
-        return result.data;
+    console.log(
+      "NOTES HISTORY RESPONSE =",
+      result.data
+    );
 
-    }
+    return result.data;
 
-    catch (error) {
+  } catch (error) {
+    console.log(
+      "NOTES HISTORY ERROR =",
+      error
+    );
 
-        console.log(
-            "GENERATE NOTES ERROR =",
-            error
-        );
+    throw error;
+  }
+};
 
-        throw error;
 
-    }
+// ========================================
+// GET SINGLE NOTE
+// ========================================
+
+export const getNoteById = async (noteId) => {
+  try {
+    const result = await axios.get(
+      serverUrl + `/api/notes/${noteId}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log(
+      "SINGLE NOTE RESPONSE =",
+      result.data
+    );
+
+    return result.data;
+
+  } catch (error) {
+    console.log(
+      "SINGLE NOTE ERROR =",
+      error
+    );
+
+    throw error;
+  }
 };
