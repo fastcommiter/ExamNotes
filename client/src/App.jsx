@@ -1,101 +1,163 @@
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
 
-import Auth from "./pages/Auth.jsx";
-import Home from "./pages/Home.jsx";
-import History from "./pages/History.jsx";
-import Notes from "./pages/Notes.jsx";
-import Pricing from "./pages/Pricing.jsx";
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-import PaymentSuccess from "./pages/PaymentSuccess.jsx";
-import PaymentFailed from "./pages/PaymentFailed.jsx";
+import { useDispatch } from "react-redux";
 
 import { getCurrentUser } from "./services/api";
-import { useDispatch, useSelector } from "react-redux";
 
-export const serverUrl = "http://localhost:8000";
+
+// ========================================
+// PAGES
+// ========================================
+
+import Auth from "./pages/Auth";
+import Home from "./pages/Home";
+import History from "./pages/History";
+import Notes from "./pages/Notes";
+import Pricing from "./pages/Pricing";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFailed from "./pages/PaymentFailed";
+
+
+// ========================================
+// SERVER URL
+// ========================================
+
+export const serverUrl =
+  import.meta.env.VITE_SERVER_URL ||
+  "http://localhost:8000";
+
+
+// ========================================
+// APP
+// ========================================
 
 function App() {
+
   const dispatch = useDispatch();
 
+
+  // ========================================
+  // GET CURRENT USER
+  // ========================================
+
   useEffect(() => {
+
     getCurrentUser(dispatch);
+
   }, [dispatch]);
 
-  const { userData } = useSelector((state) => state.user);
-
-  console.log("USER DATA =", userData);
 
   return (
+
     <Routes>
 
-      <Route
-        path="/"
-        element={
-          userData ? (
-            <Home />
-          ) : (
-            <Navigate to="/auth" replace />
-          )
-        }
-      />
+      {/* ===============================
+          AUTH
+      =============================== */}
 
       <Route
         path="/auth"
         element={
-          userData ? (
-            <Navigate to="/" replace />
-          ) : (
-            <Auth />
-          )
+          <Auth />
         }
       />
 
+
+      {/* ===============================
+          HOME
+      =============================== */}
+
       <Route
-        path="/history"
+        path="/"
         element={
-          userData ? (
-            <History />
-          ) : (
-            <Navigate to="/auth" replace />
-          )
+          <Home />
         }
       />
+
+
+      {/* ===============================
+          NOTES
+      =============================== */}
 
       <Route
         path="/notes"
         element={
-          userData ? (
-            <Notes />
-          ) : (
-            <Navigate to="/auth" replace />
-          )
+          <Notes />
         }
       />
+
+
+      {/* ===============================
+          HISTORY
+      =============================== */}
+
+      <Route
+        path="/history"
+        element={
+          <History />
+        }
+      />
+
+
+      {/* ===============================
+          PRICING
+      =============================== */}
 
       <Route
         path="/pricing"
         element={
-          userData ? (
-            <Pricing />
-          ) : (
-            <Navigate to="/auth" replace />
-          )
+          <Pricing />
         }
       />
 
+
+      {/* ===============================
+          PAYMENT SUCCESS
+      =============================== */}
+
       <Route
         path="/payment-success"
-        element={<PaymentSuccess />}
+        element={
+          <PaymentSuccess />
+        }
       />
+
+
+      {/* ===============================
+          PAYMENT FAILED
+      =============================== */}
 
       <Route
         path="/payment-failed"
-        element={<PaymentFailed />}
+        element={
+          <PaymentFailed />
+        }
+      />
+
+
+      {/* ===============================
+          UNKNOWN ROUTE
+      =============================== */}
+
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to="/"
+            replace
+          />
+        }
       />
 
     </Routes>
   );
 }
+
 
 export default App;
